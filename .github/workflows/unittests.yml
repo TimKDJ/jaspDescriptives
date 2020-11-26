@@ -14,14 +14,15 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: "3.6.1", jaspRequiredFilesBranch: "Windows",        required_pkgs: "/pkgs", libPath: "/R/library"}
-          - {os: macOS-latest,   r: "3.6.1", jaspRequiredFilesBranch: "MacOS-Original", required_pkgs: "/pkgs", libPath: "/Frameworks/R.framework/Versions/3.6/Resources/library/"}
+          - {os: windows-latest, r: "3.6.1", jaspRequiredFilesBranch: "Windows",        libPath: "R/library"}
+          - {os: macOS-latest,   r: "3.6.1", jaspRequiredFilesBranch: "MacOS-Original", libPath: "Frameworks/R.framework/Versions/3.6/Resources/library/"}
           # - {os: ubuntu-20.04, r: "release", R_LIBS: "", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       R_REMOTES_UPGRADE: never
       VDIFFR_RUN_TESTS: true
+      LIB_PATH: '$HOME/pkgs/${{ matrix.config.libPath }}'
 
     steps:
       - uses: actions/checkout@v2
@@ -31,35 +32,14 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - name: Clone jasp-required-files
-        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git "${HOME}/${{ matrix.config.required_pkgs}}"
-        shell: bash
+        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git $HOME/pkgs
 
-      - name: Setup Windows
-        if: runner.os == 'Windows'
-        run: |
-          function posix2windows {
-            # convert POSIX to Windows https://stackoverflow.com/a/13701495/4917834
-            echo $1 | sed -e 's/^\///' -e 's/\//\\/g' -e 's/^./\0:/'
-          }
-          # required pkgs location for jasptools
-          req_pkgs=$(posix2windows "${HOME}${{ matrix.config.required_pkgs}}")
-          echo "REQUIRED_PKGS=${req_pkgs}" >> $GITHUB_ENV
-          # R libpath
-          libpath=$(posix2windows "${HOME}${{ matrix.config.required_pkgs}}${{ matrix.config.libPath }}")
-          echo "R_LIBS_USER=${libpath}" >> $GITHUB_ENV
-        shell: bash
+      - name: Setup libPath
+        run: echo ".libPaths(c(normalizePath('$LIB_PATH', .libPaths()))" >> ~/.Rprofile
 
-      - name: Setup macOS
+      - name: Setup xquartz
         if: runner.os == 'macOS'
-        run: |
-          # required pkgs location for jasptools
-          req_pkgs="${HOME}${{ matrix.config.required_pkgs}}"
-          echo "REQUIRED_PKGS=${req_pkgs}" >> $GITHUB_ENV
-          # R libpath
-          libpath="${HOME}${{ matrix.config.required_pkgs}}${{ matrix.config.libPath }}"
-          echo "R_LIBS_USER=${libpath}" >> $GITHUB_ENV
-          # xquartz
-          brew cask install xquartz
+        run: brew cask install xquartz
 
       - name: Setup jaspTools
         run: |
