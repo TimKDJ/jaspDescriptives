@@ -36,7 +36,7 @@ jobs:
         shell: bash
 
       - name: Set R library path
-        run: echo ".libPaths(c(normalizePath(file.path(Sys.getenv('HOME'), 'pkgs', '${{ matrix.config.libPath }}')), .libPaths()))" >> ~/.Rprofile
+        run: echo ".libPaths(c(file.path(Sys.getenv('HOME'), 'pkgs', '${{ matrix.config.libPath }}'), .libPaths()))" >> ~/.Rprofile
 
       - name: Install jags (macOS)
         if: runner.os == 'macOS'
@@ -46,7 +46,7 @@ jobs:
 
       - name: Locate jags (Windows)
         if: runner.os == 'Windows'
-        run: echo "Sys.setenv(JAGS_HOME = file.path(normalizePath(Sys.getenv('HOME')), 'pkgs', '64', 'JAGS'))"  >> ~/.Rprofile
+        run: echo "Sys.setenv(JAGS_HOME = file.path(Sys.getenv('HOME'), 'pkgs', '64', 'JAGS'))"  >> ~/.Rprofile
 
       - name: Setup jaspTools
         run: |
