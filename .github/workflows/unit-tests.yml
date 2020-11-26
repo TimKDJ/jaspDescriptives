@@ -27,7 +27,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
 
-      - name: Install xquartz (macOS)
+      - name: Install system dependencies on macOS
         if: runner.os == 'macOS'
         run: brew cask install xquartz
 
@@ -38,13 +38,13 @@ jobs:
       - name: Set R library path
         run: echo ".libPaths(c(file.path(Sys.getenv('HOME'), 'pkgs', '${{ matrix.config.libPath }}'), .libPaths()))" >> ~/.Rprofile
 
-      - name: Install jags (macOS)
+      - name: Install jags on macOS
         if: runner.os == 'macOS'
         run: |
           rm '/usr/local/bin/gfortran'
           brew install jags
 
-      - name: Locate jags (Windows)
+      - name: Locate jags on Windows
         if: runner.os == 'Windows'
         run: echo "Sys.setenv(JAGS_HOME = file.path(Sys.getenv('HOME'), 'pkgs', '64', 'JAGS'))"  >> ~/.Rprofile
 
