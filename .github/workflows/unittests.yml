@@ -35,9 +35,12 @@ jobs:
 
       - name: Setup libPath
         run: |
-        echo ".libPaths(c(normalizePath(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\")), .libPaths()))"
-        echo ".libPaths(c(normalizePath(file.path('$HOME', 'pkgs', '${{ matrix.config.libPath }}')), .libPaths()))"
-        echo ".libPaths(c(normalizePath(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\")), .libPaths()))" >> ~/.Rprofile
+          echo "${{ env.HOME }}"
+          echo "${{ env.home }}"
+          echo "${{ github.workspace }}"
+          echo ".libPaths(c(normalizePath(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\")), .libPaths()))"
+          echo ".libPaths(c(normalizePath(file.path('$HOME', 'pkgs', '${{ matrix.config.libPath }}')), .libPaths()))"
+          echo ".libPaths(c(normalizePath(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\")), .libPaths()))" >> ~/.Rprofile
 
       - name: Setup xquartz
         if: runner.os == 'macOS'
