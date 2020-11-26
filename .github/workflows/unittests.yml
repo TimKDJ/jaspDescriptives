@@ -44,6 +44,7 @@ jobs:
 
       - name: Setup jaspTools
         run: |
+          print(.libPaths())
           install.packages('remotes')
           # remotes::install_github('jasp-stats/jaspTools')
           remotes::install_github('TimKDJ/jaspTools')
