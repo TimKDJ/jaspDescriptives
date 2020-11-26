@@ -35,8 +35,8 @@ jobs:
 
       - name: Setup libPath
         run: |
-          echo ".libPaths(c(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\", .libPaths()))"
-          echo ".libPaths(c(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\", .libPaths()))" >> ~/.Rprofile
+          echo ".libPaths(c(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\"), .libPaths()))"
+          echo ".libPaths(c(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\"), .libPaths()))" >> ~/.Rprofile
         shell: bash
           
       - name: Setup xquartz
