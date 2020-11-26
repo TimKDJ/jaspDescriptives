@@ -32,12 +32,18 @@ jobs:
         run: brew cask install xquartz
 
       - name: Clone jasp-required-files
-        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git ~/pkgs
-        shell: bash
+        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git pkgs
+        working-directory: ..
 
       - name: Set R library path
-        run: echo ".libPaths(c(normalizePath(file.path('~/pkgs', '${{ matrix.config.libPath }}')), .libPaths()))" >> ~/.Rprofile
+        run: echo ".libPaths(c(normalizePath(file.path(Sys.getenv('GITHUB_WORKSPACE'), '..', 'pkgs', '${{ matrix.config.libPath }}')), .libPaths()))" >> ~/.Rprofile
         shell: bash
+      
+      - name: testLib
+        run: |
+          print(.libPaths())
+          print(Sys.getenv('GITHUB_WORKSPACE'))
+        shell: Rscript {0}
 
       - name: Install JAGS on macOS
         if: runner.os == 'macOS'
@@ -47,7 +53,7 @@ jobs:
 
       - name: Locate JAGS on Windows
         if: runner.os == 'Windows'
-        run: echo "Sys.setenv(JAGS_HOME = normalizePath(file.path('~/pkgs', '64', 'JAGS')))"  >> ~/.Rprofile
+        run: echo "Sys.setenv(JAGS_HOME = normalizePath(file.path(Sys.getenv('GITHUB_WORKSPACE'), '..', 'pkgs', '64', 'JAGS')))"  >> ~/.Rprofile
         shell: bash
 
       - name: Setup jaspTools
