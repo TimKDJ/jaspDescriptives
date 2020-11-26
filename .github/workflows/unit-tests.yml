@@ -36,11 +36,9 @@ jobs:
         working-directory: ..
 
       - name: Set R library path
-        run: |
-          echo ".libPaths(c(file.path('..', 'pkgs', '${{ matrix.config.libPath }}'), .libPaths()))" >> ~/.Rprofile
-          cat ~/.Rprofile
-        shell: bash
-      
+        run: cat("\n.libPaths(c(file.path('..', 'pkgs', '${{ matrix.config.libPath }}'), .libPaths()))\n", file = "~/.Rprofile", append = TRUE)
+        shell: Rscript {0}
+
       - name: testLib
         run: |
           print(.libPaths())
@@ -60,10 +58,8 @@ jobs:
 
       - name: Locate JAGS on Windows
         if: runner.os == 'Windows'
-        run: |
-          echo "Sys.setenv(JAGS_HOME = normalizePath(file.path(Sys.getenv('GITHUB_WORKSPACE'), '..', 'pkgs', '64', 'JAGS')))"  >> ~/.Rprofile
-          cat ~/.Rprofile
-        shell: bash
+        run: cat("\nSys.setenv(JAGS_HOME = normalizePath(file.path(Sys.getenv('GITHUB_WORKSPACE'), '..', 'pkgs', '64', 'JAGS')))\n", file = "~/.Rprofile", append = TRUE)
+        shell: Rscript {0}
 
       - name: Setup jaspTools
         run: |
