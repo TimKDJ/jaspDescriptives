@@ -22,6 +22,7 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       R_REMOTES_UPGRADE: never
       VDIFFR_RUN_TESTS: true
+      LIB_ROOT: '$HOME/pkgs'
       LIB_PATH: '$HOME/pkgs/${{ matrix.config.libPath }}'
 
     steps:
@@ -32,7 +33,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - name: Clone jasp-required-files
-        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git $HOME/pkgs
+        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git $LIB_ROOT
 
       - name: Setup libPath
         run: echo ".libPaths(c(normalizePath('$LIB_PATH', .libPaths()))" >> ~/.Rprofile
