@@ -42,7 +42,12 @@ jobs:
       - name: testLib
         run: |
           print(.libPaths())
-          print(Sys.getenv('GITHUB_WORKSPACE'))
+          print(paste("workspace:", Sys.getenv('GITHUB_WORKSPACE')))
+          print(paste("home:", Sys.getenv('HOME')))
+          print("files in ..:")
+          list.files("..")
+          .libPaths("../pkgs/R/library")
+          print(.libPaths())
         shell: Rscript {0}
 
       - name: Install JAGS on macOS
