@@ -32,11 +32,12 @@ jobs:
         run: brew cask install xquartz
 
       - name: Clone jasp-required-files
-        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git $HOME/pkgs
+        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git ~/pkgs
         shell: bash
 
       - name: Set R library path
-        run: echo ".libPaths(c(file.path(Sys.getenv('HOME'), 'pkgs', '${{ matrix.config.libPath }}'), .libPaths()))" >> ~/.Rprofile
+        run: echo ".libPaths(c(normalizePath(file.path('~/pkgs', ${{ matrix.config.libPath }}')), .libPaths()))" >> ~/.Rprofile
+        shell: bash
 
       - name: Install JAGS on macOS
         if: runner.os == 'macOS'
