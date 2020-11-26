@@ -36,7 +36,9 @@ jobs:
         working-directory: ..
 
       - name: Set R library path
-        run: cat("\n.libPaths(c('", normalizePath(file.path("..", "pkgs", "${{ matrix.config.libPath }}")), "', .libPaths()))\n", file = "~/.Rprofile", sep = "", append = TRUE)
+        run: |
+          path <- normalizePath(file.path("..", "pkgs", "${{ matrix.config.libPath }}"), winslash = "/")
+          cat("\n.libPaths(c('", path, "', .libPaths()))\n", file = "~/.Rprofile", sep = "", append = TRUE)
         shell: Rscript {0}
 
       - name: Install JAGS on macOS
@@ -47,7 +49,9 @@ jobs:
 
       - name: Locate JAGS on Windows
         if: runner.os == 'Windows'
-        run: cat("\nSys.setenv(JAGS_HOME = '", normalizePath(file.path("..", "pkgs", "64", "JAGS")), "')\n", file = "~/.Rprofile", sep = "", append = TRUE)
+        run: |
+          path <- normalizePath(file.path("..", "pkgs", "64", "JAGS"), winslash = "/")
+          cat("\nSys.setenv(JAGS_HOME = '", path, "')\n", file = "~/.Rprofile", sep = "", append = TRUE)
         shell: Rscript {0}
 
       - name: Setup jaspTools
