@@ -34,7 +34,10 @@ jobs:
         run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git $HOME/pkgs
 
       - name: Setup libPath
-        run: echo ".libPaths(c(normalizePath(file.path('$HOME', 'pkgs', '${{ matrix.config.libPath }}')), .libPaths()))" >> ~/.Rprofile
+        run: |
+        echo ".libPaths(c(normalizePath(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\")), .libPaths()))"
+        echo ".libPaths(c(normalizePath(file.path('$HOME', 'pkgs', '${{ matrix.config.libPath }}')), .libPaths()))"
+        echo ".libPaths(c(normalizePath(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\")), .libPaths()))" >> ~/.Rprofile
 
       - name: Setup xquartz
         if: runner.os == 'macOS'
