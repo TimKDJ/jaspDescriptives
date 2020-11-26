@@ -22,6 +22,8 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       R_REMOTES_UPGRADE: never
       VDIFFR_RUN_TESTS: true
+      PATH_RLIB_ROOT: ${{ github.workspace }}/../pkgs
+      PATH_RLIB: "$PATH_RLIB_ROOT/${{ matrix.config.libPath }}"
 
     steps:
       - uses: actions/checkout@v2
@@ -31,16 +33,15 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - name: Clone jasp-required-files
-        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git $HOME/pkgs
+        run: git clone --branch=${{ matrix.config.jaspRequiredFilesBranch }} https://github.com/jasp-stats/jasp-required-files.git $PATH_RLIB_ROOT
 
       - name: Setup libPath
         run: |
-          echo "${{ env.HOME }}"
-          echo "${{ env.home }}"
+          echo "$PATH_RLIB_ROOT"
+          echo "$PATH_RLIB"
           echo "${{ github.workspace }}"
-          echo ".libPaths(c(normalizePath(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\")), .libPaths()))"
-          echo ".libPaths(c(normalizePath(file.path('$HOME', 'pkgs', '${{ matrix.config.libPath }}')), .libPaths()))"
-          echo ".libPaths(c(normalizePath(file.path(\"$HOME\", \"pkgs\", \"${{ matrix.config.libPath }}\")), .libPaths()))" >> ~/.Rprofile
+          echo ".libPaths(c(normalizePath(file.path(\"$PATH_RLIB\")), .libPaths()))"
+          echo ".libPaths(c(normalizePath(file.path(\"$PATH_RLIB\")), .libPaths()))" >> ~/.Rprofile
 
       - name: Setup xquartz
         if: runner.os == 'macOS'
